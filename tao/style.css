@@ -1,0 +1,663 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: white;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Rubik', sans-serif;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+body.loaded {
+    opacity: 1;
+}
+
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 1s ease-in-out;
+}
+
+.intro-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dark-mode .intro-overlay {
+    background-color: #1a1a1a;
+}
+
+.welcome-text {
+    font-family: 'Rubik', sans-serif;
+    font-size: 36px;
+    color: black;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.dark-mode .welcome-text {
+    color: white;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.1s ease-out;
+}
+
+.top-links {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+}
+
+.twitter-link {
+    color: black;
+    text-decoration: none;
+    font-family: 'Rubik', sans-serif;
+    font-size: 16px;
+    transition: opacity 0.2s ease;
+}
+
+.twitter-link:hover {
+    opacity: 0.7;
+}
+
+.nav-link {
+    color: #666;
+    text-decoration: none;
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #000;
+}
+
+.nav-link[onclick="toggleMusic"] {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-link[onclick="toggleMusic"].playing {
+    color: #000;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .nav-link[onclick="toggleMusic"].playing {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.ca-text {
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.ca-text:hover {
+    color: #000;
+}
+
+.ca-text::after {
+    content: 'Copied!';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+.ca-text.copied::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.parallax {
+    position: absolute;
+    width: 45vh;
+    height: 45vh;
+    transform: translate3d(0, 5vh, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+img.parallax {
+    object-fit: contain;
+    margin: auto;
+    inset: 0;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+}
+
+/* Ensure mouth animation works with parallax */
+img[alt="mouth"].parallax {
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+.text-container {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+.typing-text {
+    font-family: 'Rubik', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: black;
+    white-space: pre;
+    visibility: hidden;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.input-icon {
+    width: 30px;
+    height: 30px;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center;
+    transform: rotate(0deg);
+    transition: transform 0.5s ease-out;
+}
+
+.input-icon.rotating {
+    transition: none;
+    animation: continuousRotation 2s linear infinite;
+}
+
+.input-icon.finish-rotation {
+    animation: none;
+    transition: transform 0.5s ease-out;
+}
+
+@keyframes continuousRotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.chat-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 20px;
+    border: 1px solid #000;
+    border-radius: 20px;
+    font-family: 'Rubik', sans-serif;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.chat-input:focus {
+    border-color: #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input::placeholder {
+    color: #999;
+    font-family: 'Rubik', sans-serif;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #1a1a1a;
+}
+
+.dark-mode .typing-text,
+.dark-mode .twitter-link {
+    color: white;
+}
+
+.dark-mode .nav-link {
+    color: #999;
+}
+
+.dark-mode .nav-link:hover {
+    color: white;
+}
+
+.dark-mode .chat-input {
+    border-color: white;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .chat-input::placeholder {
+    color: #666;
+}
+
+.dark-mode .vignette {
+    background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(255,255,255,0.05) 100%) !important;
+}
+
+/* Dropdowns */
+.roadmap-dropdown,
+.tokenomics-dropdown {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    margin-left: 20px;
+}
+
+.tokenomics-dropdown.show,
+.roadmap-dropdown.show {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.tokenomics-item,
+.roadmap-item {
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    color: #666;
+    margin: 8px 0;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+
+.roadmap-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Status indicators */
+.status {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+}
+
+.status.in-progress {
+    color: #ffd700;
+}
+
+.status.upcoming {
+    color: #ff4444;
+}
+
+/* Continuous shine effect */
+.tokenomics-item,
+.roadmap-item .phase-text {
+    background: linear-gradient(
+        90deg,
+        #666 0%,
+        #666 45%,
+        rgba(255, 255, 255, 0.9) 50%,
+        #666 55%,
+        #666 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: textShine 3s linear infinite;
+}
+
+@keyframes textShine {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+.tokenomics-dropdown.show .tokenomics-item,
+.roadmap-dropdown.show .roadmap-item {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.tokenomics-dropdown.show .tokenomics-item:nth-child(1),
+.roadmap-dropdown.show .roadmap-item:nth-child(1) { transition-delay: 0.1s; }
+.tokenomics-dropdown.show .tokenomics-item:nth-child(2),
+.roadmap-dropdown.show .roadmap-item:nth-child(2) { transition-delay: 0.2s; }
+.tokenomics-dropdown.show .tokenomics-item:nth-child(3) { transition-delay: 0.3s; }
+.tokenomics-dropdown.show .tokenomics-item:nth-child(4) { transition-delay: 0.4s; }
+
+/* Dark mode styles for dropdowns */
+.dark-mode .tokenomics-item,
+.dark-mode .roadmap-item {
+    color: #999;
+}
+
+.dark-mode .status.in-progress {
+    color: #ffe44d;
+}
+
+.dark-mode .status.upcoming {
+    color: #ff6666;
+}
+
+/* Dark mode adjustments */
+.dark-mode .tokenomics-item,
+.dark-mode .roadmap-item .phase-text {
+    background: linear-gradient(
+        90deg,
+        #999 0%,
+        #999 45%,
+        rgba(255, 255, 255, 0.7) 50%,
+        #999 55%,
+        #999 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Ensure text is visible while loading webfonts */
+.tokenomics-item,
+.roadmap-item .phase-text {
+    color: #666;
+}
+
+.dark-mode .tokenomics-item,
+.dark-mode .roadmap-item .phase-text {
+    color: #999;
+}
+
+/* Sniper Modal */
+.sniper-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 900px;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.sniper-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.sniper-content {
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #666;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: #000;
+}
+
+.sniper-modal h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #333;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.highlight {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.stat-change {
+    font-size: 12px;
+    color: #666;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #666;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    width: 100%;
+    height: 40px;
+    padding: 0 40px 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    background: transparent;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-wrapper input:focus {
+    border-color: #666;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.input-wrapper span {
+    position: absolute;
+    right: 15px;
+    color: #666;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.feature-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 15px;
+    transition: all 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    font-size: 24px;
+}
+
+.feature-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Dark mode styles for sniper modal */
+.dark-mode .sniper-modal {
+    background: #1a1a1a;
+}
+
+.dark-mode .sniper-modal h2 {
+    color: #fff;
+}
+
+.dark-mode .stat-card {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .stat-card.highlight {
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.dark-mode .stat-value {
+    color: #fff;
+}
+
+.dark-mode .stat-label,
+.dark-mode .stat-change,
+.dark-mode .input-group label,
+.dark-mode .feature-text {
+    color: #999;
+}
+
+.dark-mode .input-wrapper input {
+    border-color: #333;
+    color: #fff;
+}
+
+.dark-mode .input-wrapper input:focus {
+    border-color: #666;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .feature-card {
+    background: rgba(255, 255, 255, 0.05);
+}
