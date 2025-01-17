@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tao AI</title>
+    <link rel="icon" type="image/png" href="images/tab.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .welcome-text {
+            font-family: 'Rubik', sans-serif;
+            font-size: 36px;
+            font-weight: 400;
+            color: black;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dark-mode .welcome-text {
+            color: white;
+        }
+
+        .enter-button {
+            font-family: 'Rubik', sans-serif;
+            font-size: 18px;
+            color: #666;
+            text-decoration: none;
+            padding: 10px 30px;
+            border: 1px solid #666;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            display: inline-block;
+        }
+
+        .enter-button:hover {
+            color: #000;
+            border-color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .enter-button {
+            color: #999;
+            border-color: #999;
+        }
+
+        .dark-mode .enter-button:hover {
+            color: #fff;
+            border-color: #fff;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            z-index: 100;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+    <div class="content-wrapper">
+        <div class="welcome-text">Welcome to Tao AI</div>
+        <a href="index.html" class="enter-button">Enter</a>
+    </div>
+
+    <div class="container">
+        <img src="images/eyes.png" alt="eyes" class="parallax" data-speed="0.03">
+        <img src="images/mouth.png" alt="mouth" class="parallax" data-speed="0.02">
+    </div>
+
+    <script>
+        // Parallax effect
+        let mouseX = 0;
+        let mouseY = 0;
+        let rafId = null;
+        const parallaxElements = document.querySelectorAll('.parallax');
+        const vignette = document.querySelector('.vignette');
+
+        function updateEffects() {
+            parallaxElements.forEach(element => {
+                const speed = parseFloat(element.getAttribute('data-speed'));
+                const moveX = (mouseX - window.innerWidth / 2) * speed;
+                const moveY = (mouseY - window.innerHeight / 2) * speed;
+                element.style.transform = `translate3d(${moveX}px, calc(5vh + ${moveY}px), 0)`;
+            });
+
+            const vignetteX = (mouseX / window.innerWidth) * 100;
+            const vignetteY = (mouseY / window.innerHeight) * 100;
+            vignette.style.background = `radial-gradient(circle at ${vignetteX}% ${vignetteY}%, transparent 20%, rgba(0,0,0,0.15) 100%)`;
+            
+            rafId = null;
+        }
+
+        function onMouseMove(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (!rafId) {
+                rafId = requestAnimationFrame(updateEffects);
+            }
+        }
+
+        document.addEventListener('mousemove', onMouseMove, { passive: true });
+    </script>
+</body>
+</html>
